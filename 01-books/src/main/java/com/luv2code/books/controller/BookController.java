@@ -59,7 +59,6 @@ public class BookController {
             books.add(newbook);
         }
 
-
     }
 
 }
