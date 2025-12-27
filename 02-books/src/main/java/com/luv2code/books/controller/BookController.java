@@ -1,6 +1,7 @@
 package com.luv2code.books.controller;
 
 import com.luv2code.books.entity.Book;
+import com.luv2code.books.request.BookRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ public class BookController {
                 new Book(2, "Java Spring Master", "Eric Roby", "Computer Science", 5),
                 new Book(3, "Why 1+1 rocks?", "Adil A.", "Math", 1),
                 new Book(4, "How bears hibernate", "Bob B.", "Science", 2),
-                new Book(1, "A Pirate's treasure", "Curt C.", "History", 3),
-                new Book(1, "Why 2+2 is better", "Dan D.", "Computer Science", 1)
+                new Book(5, "A Pirate's treasure", "Curt C.", "History", 3),
+                new Book(6, "Why 2+2 is better", "Dan D.", "Computer Science", 1)
         ));
     }
 
@@ -51,14 +52,13 @@ public class BookController {
     }
 
     @PostMapping
-    public void createBook(@RequestBody Book newbook) {
+    public void createBook(@RequestBody BookRequest bookRequest) {
 
-        boolean isNewBook = books.stream()
-                .noneMatch(book -> book.getTitle().equalsIgnoreCase(newbook.getTitle()));
+        long id = books.isEmpty() ? 1 : books.getLast().getId() + 1;
 
-        if (isNewBook) {
-            books.add(newbook);
-        }
+        Book book = convertToBook(id, bookRequest);
+
+        books.add(book);
 
     }
 
@@ -75,5 +75,15 @@ public class BookController {
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable long id) {
         books.removeIf(book -> book.getId() == id);
+    }
+
+    private Book convertToBook(long id, BookRequest bookRequest) {
+        return new Book(
+                id,
+                bookRequest.getTitle(),
+                bookRequest.getAuthor(),
+                bookRequest.getCategory(),
+                bookRequest.getRating()
+        );
     }
 }
