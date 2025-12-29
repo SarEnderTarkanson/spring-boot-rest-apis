@@ -2,7 +2,9 @@ package com.luv2code.books.controller;
 
 import com.luv2code.books.entity.Book;
 import com.luv2code.books.request.BookRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
+@Validated
 public class BookController {
 
     private final List<Book> books = new ArrayList<>();
@@ -54,7 +57,7 @@ public class BookController {
     }
 
     @PostMapping
-    public void createBook(@RequestBody BookRequest bookRequest) {
+    public void createBook(@Valid @RequestBody BookRequest bookRequest) {
 
         long id = books.isEmpty() ? 1 : books.getLast().getId() + 1;
 
@@ -65,7 +68,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public void updateBook(@PathVariable @Min(value = 0) long id, @RequestBody BookRequest bookRequest) {
+    public void updateBook(@PathVariable @Min(value = 0) long id, @Valid @RequestBody BookRequest bookRequest) {
         for (int i = 0; i < books.size(); i++) {
             if (books.get(i).getId() == id) {
                 Book updatedBook = convertToBook(id, bookRequest);
