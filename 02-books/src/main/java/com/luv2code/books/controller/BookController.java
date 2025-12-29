@@ -43,7 +43,10 @@ public class BookController {
     @Operation(summary = "Get all books", description = "Retrieve a list of all available books")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<Book> getBooks(@Parameter(description = "Optional query parameter") @RequestParam(required = false) String category) {
+    public List<Book> getBooks(
+            @Parameter(description = "Optional query parameter")
+            @RequestParam(required = false) String category
+    ) {
 
         if (category == null) {
             return books;
@@ -85,20 +88,31 @@ public class BookController {
     @Operation(summary = "Update a book", description = "Update the details of an existing book")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
-    public void updateBook(@Parameter(description = "Id of the the book to be updated") @PathVariable @Min(value = 0) long id, @Valid @RequestBody BookRequest bookRequest) {
+    public Book updateBook(@Parameter(description = "Id of the the book to be updated") @PathVariable @Min(value = 0) long id, @Valid @RequestBody BookRequest bookRequest) {
         for (int i = 0; i < books.size(); i++) {
             if (books.get(i).getId() == id) {
                 Book updatedBook = convertToBook(id, bookRequest);
                 books.set(i, updatedBook);
-                return;
+                return updatedBook;
             }
         }
+
+        throw new BookNotFoundException("Book not found - " + id);
+
     }
 
     @Operation(summary = "Delete a book", description = "Remove a book from the list")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteBook(@Parameter(description = "Id of the the book to be deleted") @PathVariable @Min(value = 0) long id) {
+
+        books.stream()
+                .filter(book -> book.getId() == id)
+                .findFirst()
+                .orElseThrow(
+                        () -> new BookNotFoundException("Book not found - " + id)
+                );
+
         books.removeIf(book -> book.getId() == id);
     }
 
