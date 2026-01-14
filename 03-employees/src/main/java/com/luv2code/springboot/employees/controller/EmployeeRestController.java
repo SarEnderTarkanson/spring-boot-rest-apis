@@ -35,7 +35,7 @@ public class EmployeeRestController {
     @Operation(summary = "Fetch simple employee", description = "Get a single employee by their ID")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable @Min(value = 2) long employeeId) {
+    public Employee getEmployee(@PathVariable @Min(value = 1) long employeeId) {
         Employee theEmployee = employeeService.findById(employeeId);
         return theEmployee;
     }
