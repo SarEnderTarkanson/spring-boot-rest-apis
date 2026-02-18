@@ -1,9 +1,14 @@
 package com.luv2code.springboot.todos.service;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.util.Date;
 import java.util.Map;
 
 @Service
@@ -27,6 +32,17 @@ public class JwtServiceImpl implements  JwtService {
 
     @Override
     public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
-        return "";
+        return Jwts.builder()
+                .claims(claims)
+                .subject(userDetails.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
+                .signWith(getSigningKey(), Jwts.SIG.HS256)
+                .compact();
+    }
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }
