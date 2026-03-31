@@ -1,7 +1,9 @@
 package com.luv2code.springboot.todos.service;
 
+import com.luv2code.springboot.todos.entity.Authority;
 import com.luv2code.springboot.todos.entity.User;
 import com.luv2code.springboot.todos.repository.UserRepository;
+import com.luv2code.springboot.todos.response.UserResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,13 +22,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getUserInfo() {
+    public UserResponse getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated() || Objects.equals(authentication.getPrincipal(), "anonymousUser")) {
         throw new AccessDeniedException("Authentication is required");
         }
 
-        return (User) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
+
+        assert user != null;
+        return new UserResponse(
+                user.getId(),
+                user.getFirstName() + " " + user.getLastName(),
+                user.getEmail(),
+                user.getAuthorities().stream().map(auth -> (Authority) auth).toList()
+        );
     }
 }
