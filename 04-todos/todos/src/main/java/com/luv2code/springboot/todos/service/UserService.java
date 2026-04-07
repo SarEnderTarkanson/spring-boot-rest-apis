@@ -4,5 +4,5 @@ import com.luv2code.springboot.todos.response.UserResponse;
 
 public interface UserService {
     UserResponse getUserInfo();
-    void deteleUser();
+    void deleteUser();
 }
