@@ -1,8 +1,8 @@
 package com.luv2code.springboot.todos.controller;
 
 import com.luv2code.springboot.todos.request.ToDoRequest;
-import com.luv2code.springboot.todos.response.ToDoResponse;
-import com.luv2code.springboot.todos.service.ToDoService;
+import com.luv2code.springboot.todos.response.TodoResponse;
+import com.luv2code.springboot.todos.service.TodoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -12,18 +12,18 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "To do REST API Endpoints", description = "Operations for managing user todos")
 @RestController
 @RequestMapping("/api/todos")
-public class ToDoController {
+public class TodoController {
 
-    private final ToDoService toDoService;
+    private final TodoService toDoService;
 
-    public ToDoController(ToDoService toDoService) {
+    public TodoController(TodoService toDoService) {
         this.toDoService = toDoService;
     }
 
     @Operation(summary = "Create to do for user", description = "Create todo for the signed in user")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ToDoResponse createToDo(@Valid @RequestBody ToDoRequest toDoRequest) {
+    public TodoResponse createToDo(@Valid @RequestBody ToDoRequest toDoRequest) {
         return toDoService.createToDo(toDoRequest);
     }
 }

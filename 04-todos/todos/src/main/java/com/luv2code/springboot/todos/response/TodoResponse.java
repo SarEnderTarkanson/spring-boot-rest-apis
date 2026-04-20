@@ -1,13 +1,13 @@
 package com.luv2code.springboot.todos.response;
 
-public class ToDoResponse {
+public class TodoResponse {
     private long id;
     private String title;
     private String description;
     private int priority;
     private boolean complete;
 
-    public ToDoResponse(long id, String title, String description, int priority, boolean complete) {
+    public TodoResponse(long id, String title, String description, int priority, boolean complete) {
         this.id = id;
         this.title = title;
         this.description = description;
